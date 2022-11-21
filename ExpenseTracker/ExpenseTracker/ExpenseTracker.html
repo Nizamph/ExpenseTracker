@@ -22,8 +22,9 @@
     <ul id="listOfExpenses"></ul>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js"></script>
 <script>
-     function saveToCrudStorage(event){
-        event.preventDefault();
+     async function saveToCrudStorage(event){
+        try{
+            event.preventDefault();
        const Expense = event.target.Expense.value;
        const Description = event.target.Description.value;
        const Category = event.target.Category.value;
@@ -32,36 +33,30 @@
         Description,
         Category
        }
-        axios
-        .post("https://crudcrud.com/api/2fc97bb0d7d54a90969214e8116bd375/ExpenseTracker",Obj)
-        .then((resolve) => {
-        
-            showNewUserOnScreen(resolve.data)
-            console.log(resolve)
-        })
-        .catch((err) => {
+      const response =  await axios.post("https://crudcrud.com/api/0d03d90ff2b14a4b9d079b77cf8cb078/ExpenseTracker",Obj)
+                showNewUserOnScreen(response.data)
+        }catch(err){
             document.body.innerHTML =   document.body.innerHTML + "<h4>Something went wrong</h4>"
             console.log(err)
-        })  
-
+        }
     }
+     
  
 
-    window.addEventListener("DOMContentLoaded", ()=> {
+    window.addEventListener("DOMContentLoaded", async()=> {
+    try{
+
+    const response = await axios.get("https://crudcrud.com/api/0d03d90ff2b14a4b9d079b77cf8cb078/ExpenseTracker")
     
-    axios.get("https://crudcrud.com/api/2fc97bb0d7d54a90969214e8116bd375/ExpenseTracker")
-    .then((resolve) => {
-        for(let i = 0; i<resolve.data.length; i++) {
-            showNewUserOnScreen(resolve.data[i])
-        }
+    for(let i = 0; i<response.data.length; i++) {
+        showNewUserOnScreen(response.data[i])
+    }
         
-    })
-    .catch((err) => {
+    }catch(err){
         document.body.innerHTML =   document.body.innerHTML + "<h4>Something went wrong</h4>"
         console.log(err)
-    })
-        })
-
+    }
+})
     function showNewUserOnScreen(user) {
         document.getElementById("Expense").value  = ''
         document.getElementById("Description").value = ''
@@ -86,17 +81,21 @@
 
         deleteExpense(UserId)
      }
-     function deleteExpense(UserId) {
-        axios.delete(`https://crudcrud.com/api/2fc97bb0d7d54a90969214e8116bd375/ExpenseTracker/${UserId}`)
-        .then((response) => {
+    async function deleteExpense(UserId) {
+        try{
+         const response = await axios.delete(`https://crudcrud.com/api/0d03d90ff2b14a4b9d079b77cf8cb078/ExpenseTracker/${UserId}`)
+      
             removeExpenseFromScreen(UserId)
-        })
-        .catch((err) => {
+  
+
+        }catch(err) {
             document.body.innerHTML =   document.body.innerHTML + "<h4>Something went wrong</h4>"
             console.log(err)
-        })
+        }
+
+        }
       
-     }
+     
 
      function removeExpenseFromScreen(UserId) {
         const parentNode = document.getElementById("listOfExpenses")
